@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2014 David Haller <davidhaller@outlook.com>
+# Copyright (C) 2015 David Haller <davidhaller@outlook.com>
 #
 # rpmunowned is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -70,12 +70,17 @@ def unowned_file_list() -> list:
 if __name__ == "__main__":
     setproctitle("rpmunowned")
 
-    files = unowned_file_list()
-    output = []
+    try:
+        files = unowned_file_list()
+        output = []
 
-    for path in files:
-        output.append(path)
-        output.append("\n")
+        for path in files:
+            output.append(path)
+            output.append("\n")
 
-    print(str.strip("".join(output)))
-    exit()
+        print(str.strip("".join(output)))
+        exit()
+
+    except KeyboardInterrupt:
+        exit()
+
