@@ -24,12 +24,12 @@ from setproctitle import setproctitle
 import rpm
 
 
-def absolute_file_list(root = "/", exclude = ("/home", "/dev", "/media", "/mnt",
-                                              "/opt", "/proc", "/root", "/run",
-                                              "/sys", "/tmp", "/var")) -> list:
+def absolute_file_list(root="/", exclude=("/home", "/boot", "/dev", "/media",
+                                          "/mnt", "/proc", "/root", "/run",
+                                          "/sys", "/tmp", "/var")) -> list:
     """
     Returns the absolute paths of all files in root,
-    including sub directories.
+    including subdirectories.
     @param root: Directory where the search begins.
     @param exclude: Directories that won't be searched.
     """
@@ -54,7 +54,7 @@ def owned_file_list() -> list:
 
     for header in ts.dbMatch():
         for filename in header["FILENAMES"]:
-            result.append(filename.decode(encoding = "UTF-8"))
+            result.append(filename.decode(encoding="UTF-8"))
 
     return result
 
@@ -82,5 +82,4 @@ if __name__ == "__main__":
         exit()
 
     except KeyboardInterrupt:
-        exit()
-
+        exit("\nProgram aborted by user.")
