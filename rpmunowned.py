@@ -20,66 +20,50 @@ from os import walk
 from os.path import join
 from sys import exit
 
-from setproctitle import setproctitle
 import rpm
 
 
-def absolute_file_list(root="/", exclude=("/home", "/boot", "/dev", "/media",
+def all_files(root="/", exclude=("/home", "/boot", "/dev", "/media",
                                           "/mnt", "/proc", "/root", "/run",
-                                          "/sys", "/tmp", "/var")) -> list:
+                                          "/sys", "/tmp", "/var")):
     """
     Returns the absolute paths of all files in root,
     including subdirectories.
     @param root: Directory where the search begins.
     @param exclude: Directories that won't be searched.
     """
-    result = []
 
     for path, dirnames, filenames in walk(root):
         if not path.startswith(exclude):
             for dirname in dirnames:
-                result.append(join(path, dirname))
+                yield join(path, dirname)
             for filename in filenames:
-                result.append(join(path, filename))
-    return result
+                yield join(path, filename)
 
 
-def owned_file_list() -> list:
+def owned_files():
     """
-    Returns a list with the absolute paths
-    of all installed files.
+    Returns the absolute paths of all installed files.
     """
-    result = []
     ts = rpm.TransactionSet()
 
     for header in ts.dbMatch():
         for filename in header["FILENAMES"]:
-            result.append(filename.decode(encoding="UTF-8"))
-
-    return result
+            yield filename.decode(encoding="UTF-8")
 
 
-def unowned_file_list() -> list:
+def unowned_files() -> list:
     """
     Returns a list with the absolute paths
     of all files not owned by any package.
     """
-    return sorted(set(absolute_file_list()) - set(owned_file_list()))
+    return sorted(set(all_files()) - set(owned_files()))
 
 
 if __name__ == "__main__":
-    setproctitle("rpmunowned")
-
     try:
-        files = unowned_file_list()
-        output = []
-
-        for path in files:
-            output.append(path)
-            output.append("\n")
-
-        print(str.strip("".join(output)))
+        for path in unowned_files():
+            print(path)
         exit()
-
     except KeyboardInterrupt:
         exit("\nProgram aborted by user.")

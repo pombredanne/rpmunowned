@@ -16,4 +16,4 @@ Per default, things like home directories or files on external hard drives are i
 
 ## Dependencies
 
-`rpmunowned` is written in Python. You will need a Python interpreter (>= 3.0) and the additional modules `rpm` and `setproctitle`.
+`rpmunowned` is written in Python. You will need a Python interpreter (>= 3.0) and the additional `rpm` module.
